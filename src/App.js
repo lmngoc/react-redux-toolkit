@@ -4,20 +4,33 @@ import { useSelector, useDispatch } from 'react-redux';
 import { decrement, increment } from './redux/slice/counterSlice';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { fetchAllUser } from './redux/slice/userSlice';
 
 function App() {
 
   const dispatch = useDispatch();
-  const count = useSelector((state) => state.counter.value);
-  const [listUser, setListUser] = useState([]);
-
+  // const count = useSelector((state) => state.counter.value);
+  // const [listUser, setListUser] = useState([]);
+  const listUser = useSelector(state => state.user.listUser);
+  const isLoading = useSelector(state => state.user.isLoading);
+  const isError = useSelector(state => state.user.isError);
   useEffect(() => {
-    fetchAllUser();
+    dispatch(fetchAllUser());
   }, [])
 
-  const fetchAllUser = async () => {
-    const res = await axios.get("http://localhost:8080/users/all");
-    setListUser(res.data ? res.data : []);
+  // const fetchAllUser = async () => {
+  //   const res = await axios.get("http://localhost:8080/users/all");
+  //   setListUser(res.data ? res.data : []);
+  // }
+  if (isLoading === true && isError === false) {
+    return (
+      <div>Loading...</div>
+    )
+  }
+  if (isLoading === false && isError === true) {
+    return (
+      <div>Something wrong</div>
+    )
   }
 
   return (
